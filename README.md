@@ -97,7 +97,6 @@ All measurements use watts and watt-hours unless a field says otherwise. A value
 - [API reference](docs/api.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
-- [Release process](docs/releasing.md)
 - [GitHub repository](https://github.com/rox4H/dtu-pro-s)
 
 ## License
