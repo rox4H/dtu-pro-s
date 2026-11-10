@@ -1,0 +1,46 @@
+{
+  "name": "hoymiles-dtu-reader-client",
+  "version": "2.0.0",
+  "description": "Read-only JavaScript/TypeScript client for the Hoymiles DTU Reader local HTTP API.",
+  "author": "MECC",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "files": [
+    "src/index.js",
+    "src/index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "pack:check": "npm pack --dry-run"
+  },
+  "keywords": [
+    "hoymiles",
+    "dtu",
+    "solar",
+    "modbus",
+    "energy",
+    "api-client"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rox4H/dtu-pro-s.git",
+    "directory": "packages/npm-client"
+  },
+  "bugs": {
+    "url": "https://github.com/rox4H/dtu-pro-s/issues"
+  },
+  "homepage": "https://github.com/rox4H/dtu-pro-s#readme"
+}

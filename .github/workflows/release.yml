@@ -1,0 +1,93 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and validate release artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Check that the tag matches the package version
+        shell: bash
+        run: |
+          version="$(sed -n 's/^__version__ = "\(.*\)"/\1/p' src/hoymiles_dtu_reader/__init__.py)"
+          if [ -z "$version" ] || [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package version ${version}" >&2
+            exit 1
+          fi
+      - name: Install build and test tools
+        run: python -m pip install -e ".[dev]"
+      - name: Lint and test
+        run: |
+          ruff check .
+          pytest
+      - name: Build and validate Python distributions
+        run: |
+          mkdir -p dist/python dist/npm
+          python -m build --outdir dist/python
+          twine check --strict dist/python/*
+      - name: Test and pack JavaScript client
+        run: |
+          cd packages/npm-client
+          npm test
+          npm pack --pack-destination ../../dist/npm
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-files
+          path: dist/
+          if-no-files-found: error
+
+  publish-to-pypi:
+    name: Publish Python distributions to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/hoymiles-dtu-reader/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-files
+          path: dist/
+      - name: Publish with PyPI Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/python/
+
+  github-release:
+    name: Create GitHub Release
+    needs: [build, publish-to-pypi]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-files
+          path: dist/
+      - name: Attach release artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/python/* dist/npm/* \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "See CHANGELOG.md for the changes in this release."

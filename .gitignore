@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+node_modules/
+*.tgz
+.DS_Store
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+!**/.env.example
+device.json
+logs/
+*.log

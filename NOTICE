@@ -1,0 +1,18 @@
+Hoymiles DTU Reader
+Copyright (c) 2026 MECC
+Licensed under the MIT License (see LICENSE).
+
+This project is original code. Its runtime dependencies are installed from
+PyPI and are not bundled in this repository:
+
+  Flask       BSD-3-Clause   https://github.com/pallets/flask
+  Flask-CORS  MIT            https://github.com/corydolphin/flask-cors
+
+The JavaScript client in packages/npm-client has no runtime dependencies.
+
+The Modbus register layouts follow the public documentation of the Hoymiles
+DTU-Pro and the CHINT DDSU666/DTSU666 meters. No code from third-party
+projects is included.
+
+Hoymiles and CHINT are trademarks of their respective owners. This project is
+independent and is not affiliated with, endorsed by, or sponsored by them.
